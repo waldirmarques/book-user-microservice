@@ -45,7 +45,7 @@ public class BookControllerV1 {
     private final ListBookSpecificIdService listBookSpecificIdService;
     private final UpdateStatusBookService updateStatusBookService;
 
-    @GetMapping(value = "/{id}") //lista livros por id
+    @GetMapping(value = "/{id}")
     public BookDTO find(@PathVariable Long id) {
         return BookDTO.from(getBookService.find(id));
     }
@@ -55,9 +55,27 @@ public class BookControllerV1 {
         return BookDTO.fromAll(listBookService.findAll());
     }
 
-    @GetMapping(path = "/page") //lista todas os livros com paginação
+    @GetMapping(path = "/page")
     public Page<BookDTO> findPage(Pageable pageable) {
         return BookDTO.fromPage(listPageBookService.findPage(pageable));
+    }
+
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @PostMapping
+    public void insert(@Valid @RequestBody BookDTO bookDTO) {
+        saveBookService.insert(Book.to(bookDTO));
+    }
+
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @PutMapping(value = "/{id}")
+    public void update(@Valid @RequestBody BookDTO bookDTO, @PathVariable Long id) {
+        updateBookService.update(Book.to(bookDTO), id);
+    }
+
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{id}")
+    public void delete(@PathVariable Long id) {
+        deleteBookService.delete(id);
     }
 
     @GetMapping(value = "/getBookSpecificId/{id}") //lista livro por seu specificId
@@ -70,18 +88,6 @@ public class BookControllerV1 {
         return BookDTO.fromAll(listBookSpecificIdService.findAllSpecificId(id));
     }
 
-    @ResponseStatus(code = HttpStatus.CREATED)
-    @PostMapping //adiciona um novo Book
-    public void insert(@Valid @RequestBody BookDTO bookDTO) {
-        saveBookService.insert(Book.to(bookDTO));
-    }
-
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    @PutMapping(value = "/{id}") //atualizar uma Book
-    public void update(@Valid @RequestBody BookDTO bookDTO, @PathVariable Long id) {
-        updateBookService.update(Book.to(bookDTO), id);
-    }
-
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     @PutMapping(value = "/updateStatusBook/{id}")
     public void update(@Valid @RequestBody boolean status, @PathVariable String id) {
@@ -92,11 +98,5 @@ public class BookControllerV1 {
     @PutMapping(value = "/updateLoanSpecificId/{id}") //atualiza loan do livro
     public void update(@Valid @RequestBody String loanBookSpecificIdDTO, @PathVariable String id) {
         updateBookSpecificIdLoanService.updateSpecificId(loanBookSpecificIdDTO, id);
-    }
-
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "/{id}") //Deleta Book
-    public void delete(@PathVariable Long id) {
-        deleteBookService.delete(id);
     }
 }

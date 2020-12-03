@@ -5,6 +5,8 @@ import br.com.biblioteca.bookuser.user.UserAppRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class SaveUserAppServiceImpl implements SaveUserAppService {
@@ -13,13 +15,7 @@ public class SaveUserAppServiceImpl implements SaveUserAppService {
 
     @Override
     public void insert(UserApp userApp) {
-        userAppRepository.save(userApp);
-        userApp.setSpecificID(gerarSpecificId(userApp.getId()));
+        userApp.setSpecificID(UUID.randomUUID().toString());
         userAppRepository.save(userApp);
     }
-
-    public static String gerarSpecificId(Long id) {
-        return "00" + id;
-    }
-
 }

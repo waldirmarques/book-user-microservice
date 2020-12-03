@@ -5,6 +5,8 @@ import br.com.biblioteca.bookuser.book.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class SaveBookServiceImpl implements SaveBookService {
@@ -12,15 +14,9 @@ public class SaveBookServiceImpl implements SaveBookService {
     private final BookRepository bookRepository;
 
     @Override
-    public void insert(Book book) {
-        bookRepository.save(book);
-        book.setSpecificID(gerarSpecificId(book.getId()));
+    public void insert(Book book)  {
+        book.setSpecificID(UUID.randomUUID().toString());
         bookRepository.save(book);
     }
-
-    public static String gerarSpecificId(Long id) {
-        return "00" + id;
-    }
-
 }
 
